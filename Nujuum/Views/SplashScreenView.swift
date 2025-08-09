@@ -10,45 +10,103 @@ import SwiftUI
 struct SplashScreenView: View {
     @State private var logoOpacity: Double = 0
     @State private var logoScale: Double = 0.8
+    @State private var starOpacity: Double = 0
+    @State private var starGlow: Double = 0
+    @State private var shimmerOffset: CGFloat = -50
     @State private var isActive = false
     
     var body: some View {
         ZStack {
-            GradientBackground()
+            // Beautiful purple gradient background matching reference
+            LinearGradient(
+                gradient: Gradient(stops: [
+                    .init(color: Color("NujuumPurple").opacity(0.9), location: 0.0),
+                    .init(color: Color("NujuumPurple"), location: 0.4),
+                    .init(color: Color("NujuumPurple"), location: 0.6),
+                    .init(color: Color("NujuumPurple").opacity(0.8), location: 1.0)
+                ]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
             
             VStack {
                 Spacer()
                 
-                ZStack {
-                    Circle()
-                        .fill(Color("NujuumGold").opacity(0.10))
-                        .frame(width: 260, height: 260)
-                        .blur(radius: 60)
-                        .scaleEffect(logoScale)
-                        .opacity(logoOpacity)
-                        .animation(.easeOut(duration: 1.0), value: logoOpacity)
-                        .animation(.easeOut(duration: 1.0), value: logoScale)
-                    
-                    Image("NujuumFullLogo")
+                // Logo and star positioned exactly as in reference
+                ZStack(alignment: .center) {
+                    // Main logo text
+                    Image("NujuumLogoWhite")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(height: 120)
+                        .frame(height: 60)
                         .opacity(logoOpacity)
                         .scaleEffect(logoScale)
-                        .shadow(color: Color.black.opacity(0.25), radius: 18, x: 0, y: 10)
-                        .shadow(color: Color("NujuumGold").opacity(0.18), radius: 24, x: 0, y: 0)
-                        .animation(.easeOut(duration: 1.0), value: logoOpacity)
-                        .animation(.spring(response: 0.8, dampingFraction: 0.9, blendDuration: 0.2), value: logoScale)
+                        .animation(.easeOut(duration: 1.2), value: logoOpacity)
+                        .animation(.spring(response: 0.8, dampingFraction: 0.8, blendDuration: 0.2), value: logoScale)
+                    
+                    // Gold star positioned on the J
+                    Image("NujuumStar")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 16, height: 16)
+                        .offset(x: 18, y: -8)
+                        .opacity(starOpacity)
+                        .scaleEffect(logoScale)
+                        .shadow(color: Color("NujuumGold").opacity(starGlow * 0.8), radius: 6, x: 0, y: 0)
+                        .shadow(color: Color("NujuumGold").opacity(starGlow * 0.4), radius: 12, x: 0, y: 0)
+                        .overlay(
+                            // Subtle shimmer effect
+                            Rectangle()
+                                .fill(
+                                    LinearGradient(
+                                        gradient: Gradient(colors: [
+                                            Color.clear,
+                                            Color.white.opacity(0.6),
+                                            Color.clear
+                                        ]),
+                                        startPoint: .leading,
+                                        endPoint: .trailing
+                                    )
+                                )
+                                .frame(width: 20, height: 20)
+                                .rotationEffect(.degrees(15))
+                                .offset(x: shimmerOffset)
+                                .mask(
+                                    Image("NujuumStar")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 16, height: 16)
+                                )
+                        )
+                        .animation(.easeOut(duration: 1.0).delay(0.4), value: starOpacity)
+                        .animation(.easeOut(duration: 1.0).delay(0.4), value: starGlow)
+                        .animation(.easeInOut(duration: 0.8).delay(1.2), value: shimmerOffset)
                 }
                 
                 Spacer()
             }
         }
         .onAppear {
-            logoOpacity = 1.0
-            logoScale = 1.0
+            withAnimation {
+                logoOpacity = 1.0
+                logoScale = 1.0
+            }
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                withAnimation {
+                    starOpacity = 1.0
+                    starGlow = 0.8
+                }
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+                withAnimation {
+                    shimmerOffset = 50
+                }
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
                 isActive = true
             }
         }

@@ -15,9 +15,11 @@ Display the Nujuum brand on launch, establishing a premium, minimalist identity.
 
 **UI Features:**
 - Full-screen soft-neutral background.
-- Centered Nujuum logo (`Nujuum-Full.jpg` or `Nujuum-Small.jpg`) with smooth fade-in animation.
+- Centered Nujuum logo (`Nujuum-white-no-star.png`) with the star ('Star.png') aligned on the point of the J. 
+    - Make sure the star is aligned
+    - Also add a faint glow around the star using Nujuum gold
+    - smooth fade-in animation.
 - (Optional) Subtle, short “shimmer” animation on the gold star.
-- App name below logo in soft gray or purple.
 - Duration: 1–2 seconds or until app is ready.
 
 **Technical Details:**
